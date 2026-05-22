@@ -78,4 +78,24 @@ public class AssetService
             .ThenBy(a => a.PurchaseDate)
             .ToList();
     }
+
+    public List<(string OfficeName, int Count)> GetAssetCountPerOffice()
+    {
+        return _context.Assets
+            .Include(a => a.Office)
+            .AsEnumerable()
+            .GroupBy(a => a.Office!.OfficeName)
+            .Select(g => (OfficeName: g.Key, Count: g.Count()))
+            .OrderByDescending(x => x.Count)
+            .ToList();
+    }
+
+    public List<Asset> GetMostExpensiveAssets(int count = 5)
+    {
+        return _context.Assets
+            .Include(a => a.Office)
+            .OrderByDescending(a => a.PurchasePriceUsd)
+            .Take(count)
+            .ToList();
+    }
 }

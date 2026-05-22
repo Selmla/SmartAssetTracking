@@ -16,6 +16,7 @@ while (isRunning)
     Console.WriteLine("3. Delete asset");
     Console.WriteLine("4. Update asset");
     Console.WriteLine("5. Search assets");
+    Console.WriteLine("6. Reports");
     Console.WriteLine("0. Exit");
     Console.Write("Choose an option: ");
 
@@ -41,6 +42,10 @@ while (isRunning)
 
         case "5":
             SearchAssets();
+            break;
+
+        case "6":
+            ShowReports();
             break;
 
         case "0":
@@ -282,5 +287,52 @@ int ReadInt(string message)
         }
 
         Console.WriteLine("Invalid number. Please try again.");
+    }
+}
+
+void ShowReports()
+{
+    Console.WriteLine("\n=== Reports ===");
+    Console.WriteLine("1. Asset count per office");
+    Console.WriteLine("2. Most expensive assets");
+    Console.Write("Choose an option: ");
+
+    string? choice = Console.ReadLine();
+
+    switch (choice)
+    {
+        case "1":
+            ReportAssetCountPerOffice();
+            break;
+        case "2":
+            ReportMostExpensiveAssets();
+            break;
+        default:
+            Console.WriteLine("Invalid option.");
+            break;
+    }
+}
+
+void ReportAssetCountPerOffice()
+{
+    var results = assetService.GetAssetCountPerOffice();
+
+    Console.WriteLine("\n--- Asset count per office ---");
+
+    foreach (var (officeName, count) in results)
+    {
+        Console.WriteLine($"{officeName}: {count} asset(s)");
+    }
+}
+
+void ReportMostExpensiveAssets()
+{
+    var assets = assetService.GetMostExpensiveAssets(5);
+
+    Console.WriteLine("\n--- Top 5 most expensive assets ---");
+
+    foreach (var asset in assets)
+    {
+        Console.WriteLine($"{asset.Brand} {asset.ModelName} | ${asset.PurchasePriceUsd:F2} | {asset.Office!.OfficeName}");
     }
 }
